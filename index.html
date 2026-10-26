@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#e60000">
+<title>Vodafone Cash — قائمة الأرقام</title>
+<style>
+  :root { --red:#e60000; --ink:#172033; --line:#cbd2dc; --bg:#f4f6f9; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:Tahoma,Arial,sans-serif; }
+  header { background:var(--red); color:#fff; text-align:center; padding:22px 12px; font-size:clamp(25px,5vw,38px); font-weight:800; }
+  main { max-width:900px; margin:18px auto; padding:0 12px 28px; }
+  .hint { background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:12px; line-height:1.7; }
+  .table-wrap { overflow-x:auto; background:#fff; border:1px solid var(--line); border-radius:12px; box-shadow:0 3px 12px #14213d0d; }
+  table { width:100%; border-collapse:collapse; min-width:320px; }
+  td { padding:12px 10px; border-bottom:1px solid var(--line); vertical-align:middle; }
+  tr:last-child td { border-bottom:0; }
+  .num { width:48px; text-align:center; }
+  .badge { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; background:var(--red); color:white; font-weight:800; }
+  .name { font-weight:700; overflow-wrap:anywhere; }
+  .phone-cell { direction:ltr; text-align:left; white-space:nowrap; }
+  .phone { font-size:clamp(15px,3.6vw,21px); font-weight:800; color:var(--red); letter-spacing:.2px; }
+  button { border:0; border-radius:8px; background:var(--red); color:#fff; padding:9px 11px; font-size:14px; font-weight:700; cursor:pointer; margin-inline-start:8px; }
+  button:active { transform:scale(.98); }
+  .copy-all { width:100%; margin:0 0 12px; padding:12px; font-size:16px; }
+  .footer { color:#5b6472; font-size:12px; text-align:center; padding-top:14px; }
+  @media(max-width:480px) {
+    td { padding:10px 6px; }
+    .num { width:42px; }
+    .badge { width:30px; height:30px; }
+    button { padding:8px 9px; margin-inline-start:4px; }
+  }
+</style>
+</head>
+<body>
+<header>Vodafone Cash</header>
+<main>
+  <div class="hint">اختار الرقم واضغط <b>نسخ</b> علشان تنسخه بسهولة.</div>
+  <button class="copy-all" id="copyAll">نسخ كل الأرقام</button>
+  <div class="table-wrap">
+    <table aria-label="Vodafone Cash contacts">
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <div class="footer">قائمة أرقام Vodafone Cash</div>
+</main>
+<script>
+const contacts = [
+  ["Emad H**** M******", "01011840008"],
+  ["Yasmeen S*** A****", "01018976272"],
+  ["Mahmoud H****", "01019210324"],
+  ["Emad H**** M****** D****** E*****", "01060457601"],
+  ["Nagat i***** A** E********", "01023318599"],
+  ["أحمد ح****", "01066615668"],
+  ["محمد ع**", "01557700670"],
+  ["Ahmed A***A**H", "01038302925"],
+  ["محمود حالسيد", "01092805503"],
+  ["بسيوني ا***ا***", "01111898066"],
+  ["Amr Z****A****", "01029174233"],
+  ["نهله ب****ز*****", "01032210637"],
+  ["محمد ع**م*****", "01091500225"],
+  ["Mohamed A**", "01042756810"],
+  ["Mahmoud A*********", "01043095082"],
+  ["Mahmoud A*********", "01043057684"],
+  ["Ahmed h*****M", "01039593127"],
+  ["Ahmed h*****M", "01039592732"],
+  ["hend G**G**S", "01040291310"],
+  ["hend G**G**S", "01040980613"],
+  ["hend G**G**S", "01093455276"],
+  ["Mohamed M***M***E", "01092406617"],
+  ["Mohamed M***M***E", "01010519662"]
+];
+const tbody = document.getElementById("rows");
+contacts.forEach(([name, phone], i) => {
+  const tr = document.createElement("tr");
+  const n = document.createElement("td"); n.className = "num";
+  const badge = document.createElement("span"); badge.className = "badge"; badge.textContent = i + 1; n.appendChild(badge);
+  const nm = document.createElement("td"); nm.className = "name"; nm.textContent = name;
+  const ph = document.createElement("td"); ph.className = "phone-cell";
+  const span = document.createElement("span"); span.className = "phone"; span.textContent = phone;
+  const btn = document.createElement("button"); btn.type = "button"; btn.textContent = "نسخ";
+  btn.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(phone); btn.textContent = "اتنسخ ✓"; }
+    catch(e) { const t = document.createElement("textarea"); t.value = phone; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); btn.textContent = "اتنسخ ✓"; }
+    setTimeout(() => btn.textContent = "نسخ", 1300);
+  });
+  ph.append(span, btn); tr.append(n, nm, ph); tbody.appendChild(tr);
+});
+document.getElementById("copyAll").addEventListener("click", async () => {
+  const text = contacts.map(c => c[1]).join("\n");
+  try { await navigator.clipboard.writeText(text); }
+  catch(e) { const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); }
+  const b = document.getElementById("copyAll"); b.textContent = "تم نسخ كل الأرقام ✓"; setTimeout(() => b.textContent = "نسخ كل الأرقام", 1500);
+});
+</script>
+</body>
+</html>
