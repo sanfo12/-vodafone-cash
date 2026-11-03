@@ -9,27 +9,34 @@
   :root { --red:#e60000; --ink:#172033; --line:#cbd2dc; --bg:#f4f6f9; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--ink); font-family:Tahoma,Arial,sans-serif; }
-  header { background:var(--red); color:#fff; text-align:center; padding:22px 12px; font-size:clamp(25px,5vw,38px); font-weight:800; }
-  main { max-width:900px; margin:18px auto; padding:0 12px 28px; }
+  header { background:var(--red); color:#fff; text-align:center; padding:14px 8px; font-size:clamp(21px,5vw,30px); font-weight:800; }
+  main { width:100%; max-width:900px; margin:10px auto; padding:0 5px 20px; }
   .hint { background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:12px; line-height:1.7; }
-  .table-wrap { overflow-x:auto; background:#fff; border:1px solid var(--line); border-radius:12px; box-shadow:0 3px 12px #14213d0d; }
-  table { width:100%; border-collapse:collapse; min-width:320px; }
-  td { padding:12px 10px; border-bottom:1px solid var(--line); vertical-align:middle; }
+  .table-wrap { width:100%; overflow:hidden; background:#fff; border:1px solid var(--line); border-radius:10px; box-shadow:0 3px 12px #14213d0d; }
+  table { width:100%; border-collapse:collapse; table-layout:fixed; min-width:0; }
+  td { padding:10px 4px; border-bottom:1px solid var(--line); vertical-align:middle; }
   tr:last-child td { border-bottom:0; }
-  .num { width:48px; text-align:center; }
-  .badge { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; background:var(--red); color:white; font-weight:800; }
-  .name { font-weight:700; overflow-wrap:anywhere; }
-  .phone-cell { direction:ltr; text-align:left; white-space:nowrap; }
-  .phone { font-size:clamp(15px,3.6vw,21px); font-weight:800; color:var(--red); letter-spacing:.2px; }
-  button { border:0; border-radius:8px; background:var(--red); color:#fff; padding:9px 11px; font-size:14px; font-weight:700; cursor:pointer; margin-inline-start:8px; }
+  .num { width:8%; text-align:center; }
+  .badge { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; background:#111; color:white; font-size:16px; font-weight:900; }
+  .name { width:42%; padding-right:8px; direction:auto; unicode-bidi:plaintext; text-align:left; font-size:clamp(11px,3.2vw,16px); line-height:1.25; font-weight:700; white-space:nowrap; overflow:visible; letter-spacing:-.25px; }
+  .name.long { font-size:clamp(8.5px,2.35vw,11.5px); letter-spacing:-.35px; }
+  .phone-cell { width:50%; direction:ltr; text-align:left; white-space:nowrap; position:relative; padding-right:70px; }
+  .phone-num { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:50%; background:#111; color:#fff; font-weight:900; font-size:15px; margin-right:3px; vertical-align:middle; }
+  .phone { font-size:clamp(14px,3.8vw,18px); font-weight:800; color:var(--red); letter-spacing:-.25px; }
+  button { border:0; border-radius:7px; background:var(--red); color:#fff; padding:8px 11px; font-size:15px; line-height:1.1; font-weight:800; cursor:pointer; margin:0; min-width:52px; box-shadow:0 1px 3px #0002; vertical-align:middle; position:absolute; right:-2px; top:50%; transform:translateY(-50%); }
   button:active { transform:scale(.98); }
-  .copy-all { width:100%; margin:0 0 12px; padding:12px; font-size:16px; }
+  .copy-all { width:100%; margin:0 0 8px; padding:9px; font-size:13px; }
   .footer { color:#5b6472; font-size:12px; text-align:center; padding-top:14px; }
-  @media(max-width:480px) {
-    td { padding:10px 6px; }
-    .num { width:42px; }
-    .badge { width:30px; height:30px; }
-    button { padding:8px 9px; margin-inline-start:4px; }
+  @media(max-width:380px) {
+    td { padding:8px 2px; }
+    .badge { width:31px; height:31px; font-size:14px; }
+    .name { font-size:clamp(10px,3vw,12px); }
+    .name.long { font-size:clamp(8px,2.15vw,9.5px); }
+    .phone { font-size:clamp(12px,3.5vw,14px); }
+    .phone-num { width:27px; height:27px; font-size:13px; }
+    button { padding:7px 8px; font-size:13px; min-width:46px; right:-2px; }
+    .phone-cell { padding-right:60px; }
+    .name { padding-right:6px; }
   }
 </style>
 </head>
@@ -37,7 +44,6 @@
 <header>Vodafone Cash</header>
 <main>
   <div class="hint">اختار الرقم واضغط <b>نسخ</b> علشان تنسخه بسهولة.</div>
-  <button class="copy-all" id="copyAll">نسخ كل الأرقام</button>
   <div class="table-wrap">
     <table aria-label="Vodafone Cash contacts">
       <tbody id="rows"></tbody>
@@ -47,7 +53,7 @@
 </main>
 <script>
 const contacts = [
-  ["Emad H**** M******", "01011840008"],
+  ["Emad H**** M*******", "01011840008"],
   ["Yasmeen S*** A****", "01018976272"],
   ["Mahmoud H****", "01019210324"],
   ["Emad H**** M****** D****** E*****", "01060457601"],
@@ -76,8 +82,9 @@ contacts.forEach(([name, phone], i) => {
   const tr = document.createElement("tr");
   const n = document.createElement("td"); n.className = "num";
   const badge = document.createElement("span"); badge.className = "badge"; badge.textContent = i + 1; n.appendChild(badge);
-  const nm = document.createElement("td"); nm.className = "name"; nm.textContent = name;
+  const nm = document.createElement("td"); nm.className = "name" + (name.length > 22 ? " long" : ""); nm.textContent = name;
   const ph = document.createElement("td"); ph.className = "phone-cell";
+  const phoneIndex = document.createElement("span"); phoneIndex.className = "phone-num"; phoneIndex.textContent = i + 1;
   const span = document.createElement("span"); span.className = "phone"; span.textContent = phone;
   const btn = document.createElement("button"); btn.type = "button"; btn.textContent = "نسخ";
   btn.addEventListener("click", async () => {
@@ -85,13 +92,7 @@ contacts.forEach(([name, phone], i) => {
     catch(e) { const t = document.createElement("textarea"); t.value = phone; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); btn.textContent = "اتنسخ ✓"; }
     setTimeout(() => btn.textContent = "نسخ", 1300);
   });
-  ph.append(span, btn); tr.append(n, nm, ph); tbody.appendChild(tr);
-});
-document.getElementById("copyAll").addEventListener("click", async () => {
-  const text = contacts.map(c => c[1]).join("\n");
-  try { await navigator.clipboard.writeText(text); }
-  catch(e) { const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); }
-  const b = document.getElementById("copyAll"); b.textContent = "تم نسخ كل الأرقام ✓"; setTimeout(() => b.textContent = "نسخ كل الأرقام", 1500);
+  ph.append(phoneIndex, span, btn); tr.append(n, nm, ph); tbody.appendChild(tr);
 });
 </script>
 </body>
